@@ -5,23 +5,19 @@
 /**
  * @link https://www.rollupjs.com/command-line-interface/#command-line-flags
  */
+
+/** 
+ * rollup.config.js
+ * 如果你想异步创建配置文件，Rollup 也可以处理解析为对象或数组的 Promise
+ * @code 
+ *    import fetch from 'node-fetch';
+ *    export default fetch('/some-remote-service-which-returns-actual-config');
+ * @code
+ *    export default Promise.all([fetch('get-config-1'), fetch('get-config-2')]);
+ */
+
 const logUtil = require("./util/log");
-
-function setup() {
-  const env = process.env.NODE_ENV || "development";
-  const isDev = env === "development";
-  if (!isDev) return;
-  console.log(logUtil.logColor("Red"), "##########################");
-  console.log(logUtil.logColor("Red"), "前端团队 开发工具 启动！\n\n\n");
-  console.log(logUtil.logColor("Red"), "FE组提醒您\n");
-  console.log(logUtil.logColor("Red"), "代码千万行\n");
-  console.log(logUtil.logColor("Red"), "注释第一行\n");
-  console.log(logUtil.logColor("Red"), "命名不规范\n");
-  console.log(logUtil.logColor("Red"), "同事两行泪\n");
-  console.log(logUtil.logColor("Red"), "##########################");
-}
-
-setup();
+logUtil.setup();
 
 const commonConfig = {
   watch: {
