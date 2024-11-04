@@ -1,5 +1,5 @@
 # learnRollup
-learn rollup.js and a sample project
+learn rollup.js and a simple project
 
 ### pre start
 
@@ -19,7 +19,7 @@ pnpm buildts
 pnpm build
 ```
 
-### start & only output
+### build
 
 `typescript`
 1. `amd`
