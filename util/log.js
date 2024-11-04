@@ -9,6 +9,6 @@ const colorMap = {
   White: "\x1b[37m",
 };
 
-export default {
+module.exports = {
   logColor: (color) => colorMap[color],
 };

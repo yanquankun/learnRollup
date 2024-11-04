@@ -5,7 +5,7 @@
 /**
  * @link https://www.rollupjs.com/command-line-interface/#command-line-flags
  */
-import logUtil from "./util/log";
+const logUtil = require("./util/log");
 
 function setup() {
   const env = process.env.NODE_ENV || "development";
