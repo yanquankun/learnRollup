@@ -1,4 +1,4 @@
-// rollup.config.js
+// rollup.config.ts
 /**
  * @type {import('rollup').RollupOptions}
  */

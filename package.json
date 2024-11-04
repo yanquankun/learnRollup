@@ -14,8 +14,9 @@
     "iifets": "rollup src/index.ts --file dist/bundle.js --format iife",
     "ests": "rollup src/index.ts --file dist/bundle.js --format es",
     "umdts": "rollup src/index.ts --file dist/bundle.js  --format umd --name bundle.js",
-    "build": "rollup --config rollup.test.js --environment NODE_ENV:development --watch",
-    "buildts": "rollup --config rollup.test.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:development --watch"
+    "build": "rollup --config rollup.config.js --environment NODE_ENV:development --watch",
+    "buildts": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:development --watch",
+    "buildfun": "node rollup.fun.js"
   },
   "author": "",
   "license": "ISC",

@@ -1,2 +1,2 @@
-const str = "BundleA";
+const str = "BundelA";
 export default str;

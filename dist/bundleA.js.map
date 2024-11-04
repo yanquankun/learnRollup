@@ -1,1 +1,0 @@
-{"version":3,"file":"bundleA.js","sources":["../bundleA/index.js"],"sourcesContent":["const str = \"BundleA\";\nexport default str;\n"],"names":[],"mappings":"AAAK,MAAC,GAAG,GAAG;;;;"}

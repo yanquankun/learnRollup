@@ -24,4 +24,5 @@ export default {
     console.log(colorMap["Red"], "同事两行泪\n");
     console.log(colorMap["Red"], "##########################");
   },
+  currentTime: () => new Date().toLocaleString(),
 };
