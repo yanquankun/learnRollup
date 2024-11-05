@@ -38,7 +38,10 @@ const baseConfig = [
     external: commonConfig.external,
     input: "src/index.js",
     output: {
-      file: "dist/index.js",
+      // file: "dist/src/index.js",
+      dir: "dist/src",
+      // 入口文件名，不包含后缀，使用file时不生效
+      entryFileNames: "[name].[hash].js",
       format: "es",
       sourcemap: true,
     },
@@ -51,12 +54,25 @@ const baseConfig = [
     external: commonConfig.external,
     input: "bundleA/index.js",
     output: {
-      file: "dist/bundleA.js",
+      // 单文件打包使用file
+      // file: "dist/bundleA.js",
+      // 使用splitChunk后，使用dir
+      dir: "dist/bundleA",
+      entryFileNames: "[name].[hash].js",
+      // chunk的文件名，如果在manualChunks也进行了设置，则会使用chunkFileNames的name加上manualChunks的name命名
+      chunkFileNames: "[name].[hash].js",
       format: "es",
       sourcemap: true,
       // 添加bundle头部信息
       banner: (chunk) => {
         return `/* bundle version ${pkg.version} */`;
+      },
+      manualChunks: (id, moduleInfo) => {
+        const { getModuleInfo, getModuleIds } = moduleInfo;
+        // 对common进行单独分包
+        if (id.includes("/common/common")) {
+          return "vendor";
+        }
       },
     },
     watch: {
