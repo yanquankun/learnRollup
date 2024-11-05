@@ -18,6 +18,8 @@
 
 const logUtil = require("./util/log");
 const pkg = require("./package.json");
+const terser = require("@rollup/plugin-terser");
+
 logUtil.setup();
 
 const commonConfig = {
@@ -28,6 +30,7 @@ const commonConfig = {
     exclude: ["node_modules/**"],
     clearScreen: false,
   },
+  plugins: [terser()],
 };
 
 const baseConfig = [
@@ -42,6 +45,7 @@ const baseConfig = [
     watch: {
       ...commonConfig.watch,
     },
+    plugins: [].concat(commonConfig.plugins),
   },
   {
     external: commonConfig.external,
@@ -58,6 +62,7 @@ const baseConfig = [
     watch: {
       ...commonConfig.watch,
     },
+    plugins: [].concat(commonConfig.plugins),
   },
 ];
 

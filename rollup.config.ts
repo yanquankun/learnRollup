@@ -26,6 +26,8 @@ import typescript from "@rollup/plugin-typescript";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { RenderedChunk } from "rollup";
+import terser from "@rollup/plugin-terser";
+
 const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
 logUtil.setup();
 
@@ -37,7 +39,7 @@ const commonConfig = {
     exclude: ["node_modules/**"],
     clearScreen: false,
   },
-  plugins: [json(), typescript()],
+  plugins: [json(), typescript(), terser()],
 };
 
 const baseConfig = [
