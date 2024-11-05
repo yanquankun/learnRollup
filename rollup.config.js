@@ -6,10 +6,10 @@
  * @link https://www.rollupjs.com/command-line-interface/#command-line-flags
  */
 
-/** 
+/**
  * rollup.config.js
  * 如果你想异步创建配置文件，Rollup 也可以处理解析为对象或数组的 Promise
- * @code 
+ * @code
  *    import fetch from 'node-fetch';
  *    export default fetch('/some-remote-service-which-returns-actual-config');
  * @code
@@ -17,9 +17,12 @@
  */
 
 const logUtil = require("./util/log");
+const pkg = require("./package.json");
 logUtil.setup();
 
 const commonConfig = {
+  // 需要排除在 bundle 外部的模块
+  external: Object.keys(pkg.dependencies),
   watch: {
     skipWrite: false,
     exclude: ["node_modules/**"],
@@ -29,6 +32,7 @@ const commonConfig = {
 
 module.exports = [
   {
+    external: commonConfig.external,
     input: "src/index.ts",
     output: {
       file: "dist/index.js",
@@ -40,6 +44,7 @@ module.exports = [
     },
   },
   {
+    external: commonConfig.external,
     input: "bundleA/index.js",
     output: {
       file: "dist/bundleA.js",

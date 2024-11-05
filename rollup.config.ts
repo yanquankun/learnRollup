@@ -21,9 +21,12 @@
  */
 
 import logUtil from "./util/log";
+import pkg from "./package.json" assert { type: "json" };
 logUtil.setup();
 
 const commonConfig = {
+  // 需要排除在 bundle 外部的模块
+  external: Object.keys(pkg.dependencies),
   watch: {
     skipWrite: false,
     exclude: ["node_modules/**"],
@@ -33,6 +36,7 @@ const commonConfig = {
 
 const config = [
   {
+    external: commonConfig.external,
     input: "src/index.ts",
     output: {
       file: "dist/index.js",
@@ -44,6 +48,7 @@ const config = [
     },
   },
   {
+    external: commonConfig.external,
     input: "bundleA/index.js",
     output: {
       file: "dist/bundleA.js",
