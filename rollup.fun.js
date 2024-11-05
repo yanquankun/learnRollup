@@ -62,10 +62,10 @@ const config = [
   },
 ];
 
-const write = function (res, outputConfig = {}) {
+const write = function (bundleGenerator, outputConfig = {}) {
   return new Promise((resolve, reject) => {
     try {
-      resolve(res.write(outputConfig));
+      resolve(bundleGenerator.write(outputConfig));
     } catch (err) {
       reject(err);
     }
@@ -78,11 +78,11 @@ const startWatch = () => {
   // 初始构建
   config.forEach((config) => {
     rollup.rollup(config).then(
-      (res) => {
-        if (res) {
+      (bundleGenerator) => {
+        if (bundleGenerator) {
           if (Array.isArray(config.output)) {
             config.output.forEach((outputConfig) => {
-              write(res, outputConfig).then(
+              write(bundleGenerator, outputConfig).then(
                 () =>
                   console.log(
                     `${logUtil.logColor("Green")} ✔ ${
@@ -98,7 +98,7 @@ const startWatch = () => {
               );
             });
           } else
-            write(res, config.output).then(
+            write(bundleGenerator, config.output).then(
               () =>
                 console.log(
                   `${logUtil.logColor("Green")} ✔ ${
