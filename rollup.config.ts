@@ -27,6 +27,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { RenderedChunk } from "rollup";
 import terser from "@rollup/plugin-terser";
+import del from "rollup-plugin-delete";
 
 const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
 const env = process.env.NODE_ENV || "development";
@@ -63,7 +64,9 @@ const baseConfig = [
     watch: {
       ...commonConfig.watch,
     },
-    plugins: [].concat(commonConfig.plugins as any),
+    plugins: [del({ targets: "dist/*", runOnce: true })].concat(
+      commonConfig.plugins as any[]
+    ),
   },
   {
     external: commonConfig.external,

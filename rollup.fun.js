@@ -22,6 +22,7 @@ const pkg = require("./package.json");
 const terser = require("@rollup/plugin-terser");
 const env = process.env.NODE_ENV || "development";
 const isDev = env === "development";
+const del = require("rollup-plugin-delete");
 
 logUtil.setup();
 
@@ -51,7 +52,9 @@ const baseConfig = [
     watch: {
       ...commonConfig.watch,
     },
-    plugins: [].concat(commonConfig.plugins),
+    plugins: [del({ targets: "dist/*", runOnce: true })].concat(
+      commonConfig.plugins
+    ),
   },
   {
     external: commonConfig.external,
