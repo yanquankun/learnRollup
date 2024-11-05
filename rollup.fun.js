@@ -31,7 +31,7 @@ const commonConfig = {
   },
 };
 
-const config = [
+const baseConfig = [
   {
     external: commonConfig.external,
     input: "src/index.ts",
@@ -76,7 +76,7 @@ let watcher = null;
 
 const startWatch = () => {
   // 初始构建
-  config.forEach((config) => {
+  baseConfig.forEach((config) => {
     rollup.rollup(config).then(
       (bundleGenerator) => {
         if (bundleGenerator) {
@@ -125,7 +125,7 @@ const startWatch = () => {
 
   // 只需要一个watch实例即可，所以统一监听所有的config
   // 监听文件变更
-  const watcher = rollup.watch(config);
+  const watcher = rollup.watch(baseConfig);
   // 是否初次构建
   let isFirstBuild = true;
   const cwd = process.cwd();

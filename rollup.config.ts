@@ -40,7 +40,7 @@ const commonConfig = {
   plugins: [json(), typescript()],
 };
 
-const config = [
+const baseConfig = [
   {
     external: [
       ...commonConfig.external,
@@ -76,4 +76,4 @@ const config = [
   },
 ];
 
-export default config;
+export default baseConfig;

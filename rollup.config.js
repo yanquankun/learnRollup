@@ -30,7 +30,7 @@ const commonConfig = {
   },
 };
 
-module.exports = [
+const baseConfig = [
   {
     external: commonConfig.external,
     input: "src/index.js",
@@ -60,3 +60,5 @@ module.exports = [
     },
   },
 ];
+
+module.exports = baseConfig;
