@@ -27,9 +27,11 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { RenderedChunk } from "rollup";
 import terser from "@rollup/plugin-terser";
-import { dir } from "node:console";
 
 const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
+const env = process.env.NODE_ENV || "development";
+const isDev = env === "development";
+
 logUtil.setup();
 
 const commonConfig = {
@@ -54,7 +56,7 @@ const baseConfig = [
       // file: "dist/src/index.js",
       dir: "dist/src",
       // 入口文件名，不包含后缀，使用file时不生效
-      entryFileNames: "[name].[hash].js",
+      entryFileNames: isDev ? "[name].js" : "[name].[hash].js",
       format: "es",
       sourcemap: true,
     },
@@ -71,9 +73,9 @@ const baseConfig = [
       // file: "dist/bundleA.js",
       // 使用splitChunk后，使用dir
       dir: "dist/bundleA",
-      entryFileNames: "[name].[hash].js",
+      entryFileNames: isDev ? "[name].js" : "[name].[hash].js",
       // chunk的文件名，如果在manualChunks也进行了设置，则会使用chunkFileNames的name加上manualChunks的name命名
-      chunkFileNames: "[name].[hash].js",
+      chunkFileNames: isDev ? "[name].js" : "[name].[hash].js",
       format: "es",
       sourcemap: true,
       // 添加bundle头部信息
