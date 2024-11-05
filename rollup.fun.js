@@ -51,6 +51,10 @@ const config = [
       file: "dist/bundleA.js",
       format: "es",
       sourcemap: true,
+      // 添加bundle头部信息
+      banner: (chunk) => {
+        return `/* bundle version ${pkg.version} */`;
+      },
     },
     watch: {
       ...commonConfig.watch,

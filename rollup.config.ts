@@ -25,6 +25,7 @@ import json from "@rollup/plugin-json";
 import typescript from "@rollup/plugin-typescript";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import type { RenderedChunk } from "rollup";
 const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
 logUtil.setup();
 
@@ -63,6 +64,10 @@ const config = [
       file: "dist/bundleA.js",
       format: "es",
       sourcemap: true,
+      // 添加bundle头部信息
+      banner: (chunk: RenderedChunk) => {
+        return `/* bundle version ${pkg.version} */`;
+      },
     },
     watch: {
       ...commonConfig.watch,
