@@ -16,12 +16,12 @@ module.exports = {
     const isDev = env === "development";
     if (!isDev) return;
     console.log(colorMap["Red"], "##########################");
-    console.log(colorMap["Red"], "前端团队 开发工具 启动！\n\n\n");
-    console.log(colorMap["Red"], "FE组提醒您\n");
-    console.log(colorMap["Red"], "代码千万行\n");
-    console.log(colorMap["Red"], "注释第一行\n");
-    console.log(colorMap["Red"], "命名不规范\n");
-    console.log(colorMap["Red"], "同事两行泪\n");
+    console.log(colorMap["Red"], "前端团队 开发工具 启动！");
+    console.log(colorMap["Red"], "FE组提醒您");
+    console.log(colorMap["Red"], "代码千万行");
+    console.log(colorMap["Red"], "注释第一行");
+    console.log(colorMap["Red"], "命名不规范");
+    console.log(colorMap["Red"], "同事两行泪");
     console.log(colorMap["Red"], "##########################");
   },
   currentTime: () => new Date().toLocaleString(),

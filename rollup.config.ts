@@ -21,7 +21,11 @@
  */
 
 import logUtil from "./util/log";
-import pkg from "./package.json" assert { type: "json" };
+import json from "@rollup/plugin-json";
+import typescript from "@rollup/plugin-typescript";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
 logUtil.setup();
 
 const commonConfig = {
@@ -32,11 +36,15 @@ const commonConfig = {
     exclude: ["node_modules/**"],
     clearScreen: false,
   },
+  plugins: [json(), typescript()],
 };
 
 const config = [
   {
-    external: commonConfig.external,
+    external: [
+      ...commonConfig.external,
+      fileURLToPath(new URL("common/common.ts", import.meta.url)),
+    ],
     input: "src/index.ts",
     output: {
       file: "dist/index.js",
@@ -46,10 +54,11 @@ const config = [
     watch: {
       ...commonConfig.watch,
     },
+    plugins: [].concat(commonConfig.plugins as any),
   },
   {
     external: commonConfig.external,
-    input: "bundleA/index.js",
+    input: "bundleA/index.ts",
     output: {
       file: "dist/bundleA.js",
       format: "es",
@@ -58,6 +67,7 @@ const config = [
     watch: {
       ...commonConfig.watch,
     },
+    plugins: [].concat(commonConfig.plugins as any),
   },
 ];
 

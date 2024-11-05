@@ -33,7 +33,7 @@ const commonConfig = {
 module.exports = [
   {
     external: commonConfig.external,
-    input: "src/index.ts",
+    input: "src/index.js",
     output: {
       file: "dist/index.js",
       format: "es",
