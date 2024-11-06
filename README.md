@@ -1,7 +1,13 @@
 # learnRollup
 
 learn rollup.js and a simple project  
-`为了方便直观地看到每个bundle的对应关系，本项目中所有的bundle entry均不采用fs统一读取，而是直接配置在各config中`
+**`为了方便直观地看到每个bundle的对应关系，本项目中所有的bundle entry均不采用fs统一读取，而是直接配置在各config中`**
+
+**适合简单的 SPA 或 MPA 项目**：Rollup 可以构建体积小的单页面应用（SPA）或多页面应用（MPA），特别是一些无复杂依赖的项目。如果项目的依赖较少、配置要求不复杂，Rollup 可以作为一个轻量的打包工具。
+
+**不适合大型复杂的前端项目**：对于依赖复杂、需要 HMR（热更新）、CSS 预处理、代码分割等高级功能的大型前端项目（如 Vue、React 项目），Rollup 的插件生态目前还不如 Webpack 或 Vite 完善。在这类场景下，Webpack 和 Vite 更能满足需求。
+
+**开发工具的打包**：Rollup 非常适合构建 CLI 工具、辅助库或其他开发工具，因为它可以生成简洁的打包
 
 ### pre start
 
