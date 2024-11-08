@@ -93,6 +93,10 @@ const baseConfig = [
         if (id.includes("/lodash.js")) {
           return "lodash";
         }
+        // 剩余依赖打包进third_party模块
+        if (id.includes("node_modules")) {
+          return "third_party";
+        }
       },
     },
     watch: {
