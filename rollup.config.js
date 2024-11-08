@@ -22,6 +22,13 @@ const terser = require("@rollup/plugin-terser");
 const env = process.env.NODE_ENV || "development";
 const isDev = env === "development";
 const del = require("rollup-plugin-delete");
+//====== start ======
+// 与 Webpack 和 Browserify 等其他打包程序不同，Rollup 默认不会识别node_modules中的依赖
+// resolve 识别node_modules中的依赖
+const resolve = require("@rollup/plugin-node-resolve");
+// commonjs 转换未提供esm的依赖为cjs
+const commonjs = require("@rollup/plugin-commonjs");
+//====== end ======
 
 logUtil.setup();
 
@@ -33,7 +40,7 @@ const commonConfig = {
     exclude: ["node_modules/**"],
     clearScreen: false,
   },
-  plugins: [terser()],
+  plugins: [terser(), resolve()],
 };
 
 const baseConfig = [
@@ -56,7 +63,10 @@ const baseConfig = [
     ),
   },
   {
-    external: commonConfig.external,
+    // 需要排除在 bundle 外部的模块，对于lodash，我们需要打包在bundle内
+    // 这个特性帮我们避免了内部bundle太过冗长的问题
+    // 通过该声明，外部依赖会保持require或import的导入方式，我们需要声明给外界你要先引入该依赖
+    external: ["tslib"],
     input: "bundleA/index.js",
     output: {
       // 单文件打包使用file
@@ -78,12 +88,17 @@ const baseConfig = [
         if (id.includes("/common/common")) {
           return "vendor";
         }
+        // 对于lodash，通过构建工具，我们仍可以通过import方式引入
+        // 原因是（Webpack、Rollup）会使用插件（如 @rollup/plugin-commonjs、Webpack 的内置 CommonJS 兼容功能）将 CommonJS 模块转换为 ESM 格式
+        if (id.includes("/lodash.js")) {
+          return "lodash";
+        }
       },
     },
     watch: {
       ...commonConfig.watch,
     },
-    plugins: [].concat(commonConfig.plugins),
+    plugins: [commonjs()].concat(commonConfig.plugins),
   },
 ];
 

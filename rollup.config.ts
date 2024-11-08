@@ -24,10 +24,17 @@ import logUtil from "./util/log";
 import json from "@rollup/plugin-json";
 import typescript from "@rollup/plugin-typescript";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+// import { fileURLToPath } from "node:url";
 import type { RenderedChunk } from "rollup";
 import terser from "@rollup/plugin-terser";
 import del from "rollup-plugin-delete";
+//====== start ======
+// 与 Webpack 和 Browserify 等其他打包程序不同，Rollup 默认不会识别node_modules中的依赖
+// resolve 识别node_modules中的依赖
+import resolve from "@rollup/plugin-node-resolve";
+// commonjs 转换未提供esm的依赖为cjs
+import commonjs from "@rollup/plugin-commonjs";
+//====== end ======
 
 const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
 const env = process.env.NODE_ENV || "development";
@@ -43,15 +50,12 @@ const commonConfig = {
     exclude: ["node_modules/**"],
     clearScreen: false,
   },
-  plugins: [json(), typescript(), terser()],
+  plugins: [json(), typescript(), terser(), resolve()],
 };
 
 const baseConfig = [
   {
-    external: [
-      ...commonConfig.external,
-      fileURLToPath(new URL("common/common.ts", import.meta.url)),
-    ],
+    external: commonConfig.external,
     input: "src/index.ts",
     output: {
       // file: "dist/src/index.js",
@@ -69,7 +73,10 @@ const baseConfig = [
     ),
   },
   {
-    external: commonConfig.external,
+    // 需要排除在 bundle 外部的模块，对于lodash，我们需要打包在bundle内
+    // 这个特性帮我们避免了内部bundle太过冗长的问题
+    // 通过该声明，外部依赖会保持require或import的导入方式，我们需要声明给外界你要先引入该依赖
+    external: ["tslib"],
     input: "bundleA/index.ts",
     output: {
       // 单文件打包使用file
@@ -94,12 +101,18 @@ const baseConfig = [
         if (id.includes("/common/common")) {
           return "vendor";
         }
+        // 对于lodash，通过构建工具，我们仍可以通过import方式引入
+        // 原因是（Webpack、Rollup）会使用插件（如 @rollup/plugin-commonjs、Webpack 的内置 CommonJS 兼容功能）将 CommonJS 模块转换为 ESM 格式
+        if (id.includes("/lodash.js")) {
+          return "lodash";
+        }
       },
     },
     watch: {
       ...commonConfig.watch,
     },
-    plugins: [].concat(commonConfig.plugins as any),
+    // commonjs plugin：一些库会暴露出 ES 模块，你可以直接导入它们，但是目前，大多数 NPM 上的包都以 CommonJS 模块的方式暴露。在这种情况下，我们需要在 Rollup 处理它们之前将 CommonJS 转换为 ES2015
+    plugins: [commonjs()].concat(commonConfig.plugins as any),
   },
 ];
 
