@@ -36,11 +36,13 @@ logUtil.setup();
 const commonConfig = {
   // 需要排除在 bundle 外部的模块
   external: Object.keys(pkg.dependencies),
-  watch: {
-    skipWrite: false,
-    exclude: ["node_modules/**"],
-    clearScreen: false,
-  },
+  watch: isDev
+    ? {
+        skipWrite: false,
+        exclude: ["node_modules/**"],
+        clearScreen: false,
+      }
+    : false,
   plugins: [terser(), resolve()],
 };
 
@@ -54,7 +56,7 @@ const baseConfig = [
       // 入口文件名，不包含后缀，使用file时不生效
       entryFileNames: isDev ? "[name].js" : "[name].[hash].js",
       format: "es",
-      sourcemap: true,
+      sourcemap: isDev,
     },
     watch: {
       ...commonConfig.watch,
@@ -78,7 +80,7 @@ const baseConfig = [
       // chunk的文件名，如果在manualChunks也进行了设置，则会使用chunkFileNames的name加上manualChunks的name命名
       chunkFileNames: isDev ? "[name].js" : "[name].[hash].js",
       format: "es",
-      sourcemap: true,
+      sourcemap: isDev,
       // 添加bundle头部信息
       banner: (chunk) => {
         return `/* bundle version ${pkg.version} */`;
@@ -100,9 +102,7 @@ const baseConfig = [
         }
       },
     },
-    watch: {
-      ...commonConfig.watch,
-    },
+    watch: true,
     plugins: [commonjs()].concat(commonConfig.plugins),
   },
 ];
@@ -183,6 +183,8 @@ const startWatch = () => {
           .currentTime()
           .replace(/\//g, "-")}] waiting for changes...`
       );
+
+      !isDev && closeWatch();
     }
     if (!isFirstBuild && event.code === "BUNDLE_END") {
       let { input, output } = event;
@@ -243,7 +245,7 @@ const startWatch = () => {
 
   watcher.on("close", () => {
     isFirstBuild = true;
-    console.log(logUtil.logColor("Cyan") + `rollup watcher close!`);
+    console.log(logUtil.logColor("Red") + `rollup watcher close，build end!`);
   });
 
   return watcher;
@@ -255,7 +257,3 @@ const closeWatch = () => {
 };
 
 watcher = startWatch();
-
-// setTimeout(() => {
-//   closeWatch();
-// }, 3000);

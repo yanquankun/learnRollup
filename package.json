@@ -16,7 +16,10 @@
     "umdts": "rollup src/index.ts --file dist/bundle.js  --format umd --name bundle.js",
     "build": "rollup --config rollup.config.js --environment NODE_ENV:development --watch",
     "buildts": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:development --watch",
-    "buildfun": "node rollup.fun.js"
+    "buildfun": "node rollup.fun.js",
+    "build:prod": "rollup --config rollup.config.js --environment NODE_ENV:production",
+    "buildts:prod": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:production",
+    "buildfun:prod": "NODE_ENV=production node rollup.fun.js"
   },
   "author": "",
   "license": "ISC",

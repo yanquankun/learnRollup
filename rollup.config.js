@@ -53,7 +53,7 @@ const baseConfig = [
       // 入口文件名，不包含后缀，使用file时不生效
       entryFileNames: isDev ? "[name].js" : "[name].[hash].js",
       format: "es",
-      sourcemap: true,
+      sourcemap: isDev,
     },
     watch: {
       ...commonConfig.watch,
@@ -77,7 +77,7 @@ const baseConfig = [
       // chunk的文件名，如果在manualChunks也进行了设置，则会使用chunkFileNames的name加上manualChunks的name命名
       chunkFileNames: isDev ? "[name].js" : "[name].[hash].js",
       format: "es",
-      sourcemap: true,
+      sourcemap: isDev,
       // 添加bundle头部信息
       banner: (chunk) => {
         return `/* bundle version ${pkg.version} */`;
