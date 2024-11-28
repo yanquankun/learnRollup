@@ -113,6 +113,12 @@ pnpm umd
 pnpm buildhtml
 ```
 
+2. `入口为html方式，打开http://localhost:3300浏览项目`
+
+```shell
+pnpm buildhtml2
+```
+
 ##### 构建插件
 
 1. `构建html-rollup-plugin插件，该插件用于替换打包后html中的js和css资源，运行如下命令，将在/plugin/html-rollup-plugin/目录里生成该插件`
