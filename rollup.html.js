@@ -14,13 +14,12 @@ const isDev = env === "development";
 const del = require("rollup-plugin-delete");
 const path = require("path");
 const fs = require("fs");
-const { createHash } = require("crypto");
-const less = require("less");
 
-const hash = require("rollup-plugin-hash");
-const html = require("./plugin/html-rollup-plugin");
-const postcss = require("rollup-plugin-postcss");
+const html = require("./plugin/html-rollup-plugin/html-rollup-plugin");
 const copy = require("rollup-plugin-copy");
+const styles = require("rollup-plugin-styles");
+const devServer = require("rollup-plugin-dev-server");
+const livereload = require("rollup-plugin-livereload");
 //====== start ======
 // 与 Webpack 和 Browserify 等其他打包程序不同，Rollup 默认不会识别node_modules中的依赖
 // resolve 识别node_modules中的依赖
@@ -31,6 +30,17 @@ const commonjs = require("@rollup/plugin-commonjs");
 
 logUtil.setup();
 
+const devsPlugins = [
+  devServer({
+    port: 3300,
+    open: true,
+    contentBase: "dist",
+  }),
+  livereload({
+    watch: ["dist", "html/index.html"],
+  }),
+];
+
 const commonConfig = {
   // 需要排除在 bundle 外部的模块
   external: Object.keys(pkg.dependencies),
@@ -38,6 +48,7 @@ const commonConfig = {
     skipWrite: false,
     exclude: ["node_modules/**"],
     clearScreen: false,
+    include: "html/**",
   },
   plugins: [terser(), resolve()],
 };
@@ -55,10 +66,16 @@ module.exports = {
     dir: "dist",
     format: "es",
     sourcemap: isDev,
-
-    entryFileNames: "js/[name]-entry.[hash].js",
-    chunkFileNames: "js/[name]-vender.[hash].js",
-    assetFileNames: "assets/[name].[hash][extname]",
+    entryFileNames: isDev ? "entry/[name].js" : "entry/[name]-entry.[hash].js",
+    chunkFileNames: isDev
+      ? "vender/[name].js"
+      : "vender/[name]-vender.[hash].js",
+    assetFileNames: (assetInfo) => {
+      if (assetInfo.name.indexOf("css") > -1) {
+        return isDev ? "css/[name][extname]" : "css/[name]-[hash][extname]";
+      }
+      return isDev ? "assets/[name][extname]" : "assets/[name]-[hash][extname]";
+    },
   },
   watch: {
     ...commonConfig.watch,
@@ -66,46 +83,15 @@ module.exports = {
   plugins: [
     commonjs(),
     del({ targets: "dist/*", runOnce: true }),
-    // less({
-    //   include: ["html/css/*"],
-    //   output: "dist/css/[name].[hash].css",
-    // }),
-    copy({
-      targets: [
-        {
-          src: "html/css/**/*",
-          dest: "dist/css",
-          rename: (name, extension, fullPath) => {
-            const hash = createHash("md5")
-              .update(fs.readFileSync(path.resolve(fullPath)))
-              .digest("hex")
-              .slice(0, 8);
-            return `${name}-${hash}.css`;
-          },
-          transform: async (contents, filename) => {
-            if (filename.includes(".less")) {
-              const result = await less.render(contents.toString(), {
-                filename,
-              });
-              return result.css;
-            }
-            return contents;
-          },
-        },
-      ],
-      hook: "generateBundle",
+    // 抽取js中加载的样式文件
+    styles({
+      mode: ["extract", "styles.css"],
+      minimize: true,
     }),
-    // hash(),
-    // postcss({
-    //   // inject: true,
-    //   extract: (chunk) => `dist/css/${chunk.name}-[hash].css`,
-    //   minimize: true,
-    //   extensions: [".css", ".less"],
-    // }),
-    hash({
-      dest: "dist",
-      replace: true,
+    html({
+      title: "测试",
+      compress: true,
+      template: path.join(__dirname, "/html/index.html"),
     }),
-    html({ title: "测试", compress: true, cssResourcePath: "css" }),
-  ].concat(commonConfig.plugins),
+  ].concat(commonConfig.plugins, isDev ? devsPlugins : []),
 };
