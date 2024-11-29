@@ -7,7 +7,8 @@
  */
 
 /** 
- * 本配置 入口为web应用中的js文件
+ * 本配置 入口为web应用中的html文件
+ * 同vite一样 观察rollup在html entry中的使用
  */
 
 const logUtil = require("./util/log");
@@ -20,7 +21,7 @@ const path = require("path");
 const fs = require("fs");
 
 const html = require("./plugin/html-rollup-plugin/html-rollup-plugin");
-const copy = require("rollup-plugin-copy");
+// const copy = require("rollup-plugin-copy");
 const styles = require("rollup-plugin-styles");
 const devServer = require("rollup-plugin-dev-server");
 const livereload = require("rollup-plugin-livereload");

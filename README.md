@@ -19,7 +19,9 @@ pnpm install
 
 ##### 采用三种构建方式，分别对应：
 
-1.针对 rollup 为 ts 的 config.ts 配置文件 2.针对 rollup 为 config.js 配置文件 3.针对 rollup 采用手动调用的方式进行构建
+1. 针对 rollup 为 ts 的 config.ts 配置文件 
+2. 针对 rollup 为 config.js 配置文件 
+3. 针对 rollup 采用手动调用的方式进行构建
 
 `typescript`
 
@@ -105,7 +107,8 @@ pnpm es
 pnpm umd
 ```
 
-##### 构建 web 项目 rollup 更适合构建 sdk 类工程，对于 web 工程，webpack 更适合
+##### 构建 web 项目 
+#### rollup 更适合构建 sdk 类工程，对于 web 工程，webpack 更适合
 
 1. `entry为js方式【该方式无法对html文件做hot】，运行后打开http://localhost:3300浏览项目`
 
@@ -116,7 +119,7 @@ pnpm buildhtml
 2. `entry为html方式，运行后打开http://localhost:3300浏览项目`
 
 ```shell
-pnpm buildhtml2
+pnpm buildstatic
 ```
 
 ##### 构建插件

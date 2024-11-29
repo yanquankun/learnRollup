@@ -22,6 +22,8 @@
     "buildfun:prod": "NODE_ENV=production node rollup.fun.js",
     "buildhtml": "rollup --config rollup.html.js --watch",
     "buildhtml:prod": "rollup --config rollup.html.js --environment NODE_ENV:production",
+    "buildhstatic": "rollup --config rollup.static.js --watch",
+    "buildstatic:prod": "rollup --config rollup.static.js --environment NODE_ENV:production",
     "buildplugin": "rollup --config rollup.plugin.ts --configPlugin @rollup/plugin-typescript --watch",
     "buildplugin:prod": "rollup --config rollup.plugin.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:production"
   },
