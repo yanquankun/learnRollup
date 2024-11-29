@@ -105,15 +105,15 @@ pnpm es
 pnpm umd
 ```
 
-##### 构建web项目
+##### 构建 web 项目 rollup 更适合构建 sdk 类工程，对于 web 工程，webpack 更适合
 
-1. `入口为js方式【该方式无法对html文件做hot】，打开http://localhost:3300浏览项目`
+1. `entry为js方式【该方式无法对html文件做hot】，运行后打开http://localhost:3300浏览项目`
 
 ```shell
 pnpm buildhtml
 ```
 
-2. `入口为html方式，打开http://localhost:3300浏览项目`
+2. `entry为html方式，运行后打开http://localhost:3300浏览项目`
 
 ```shell
 pnpm buildhtml2
@@ -126,4 +126,3 @@ pnpm buildhtml2
 ```shell
 pnpm buildplugin
 ```
-
