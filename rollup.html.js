@@ -6,19 +6,16 @@
  * @link https://www.rollupjs.com/command-line-interface/#command-line-flags
  */
 
-/** 
+/**
  * 本配置 入口为web应用中的js文件
  */
 
 const logUtil = require("./util/log");
 const pkg = require("./package.json");
 const terser = require("@rollup/plugin-terser");
-const env = process.env.NODE_ENV || "development";
-const isDev = env === "development";
 const del = require("rollup-plugin-delete");
 const path = require("path");
 const fs = require("fs");
-
 const html = require("./plugin/html-rollup-plugin/html-rollup-plugin");
 const copy = require("rollup-plugin-copy");
 const styles = require("rollup-plugin-styles");
@@ -31,6 +28,9 @@ const resolve = require("@rollup/plugin-node-resolve");
 // commonjs 转换未提供esm的依赖为cjs
 const commonjs = require("@rollup/plugin-commonjs");
 //====== end ======
+
+const env = process.env.NODE_ENV || "development";
+const isDev = env === "development";
 
 logUtil.setup();
 

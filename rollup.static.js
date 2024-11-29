@@ -6,7 +6,7 @@
  * @link https://www.rollupjs.com/command-line-interface/#command-line-flags
  */
 
-/** 
+/**
  * 本配置 入口为web应用中的html文件
  * 同vite一样 观察rollup在html entry中的使用
  */
@@ -14,13 +14,10 @@
 const logUtil = require("./util/log");
 const pkg = require("./package.json");
 const terser = require("@rollup/plugin-terser");
-const env = process.env.NODE_ENV || "development";
-const isDev = env === "development";
-const del = require("rollup-plugin-delete");
 const path = require("path");
 const fs = require("fs");
-
-const html = require("./plugin/html-rollup-plugin/html-rollup-plugin");
+const del = require("rollup-plugin-delete");
+const { rollupPluginHTML } = require("@web/rollup-plugin-html");
 // const copy = require("rollup-plugin-copy");
 const styles = require("rollup-plugin-styles");
 const devServer = require("rollup-plugin-dev-server");
@@ -31,7 +28,11 @@ const livereload = require("rollup-plugin-livereload");
 const resolve = require("@rollup/plugin-node-resolve");
 // commonjs 转换未提供esm的依赖为cjs
 const commonjs = require("@rollup/plugin-commonjs");
+const { includes } = require("lodash");
 //====== end ======
+
+const env = process.env.NODE_ENV || "development";
+const isDev = env === "development";
 
 logUtil.setup();
 
@@ -53,38 +54,40 @@ const commonConfig = {
     skipWrite: false,
     exclude: ["node_modules/**"],
     clearScreen: false,
-    include: "html/**",
+    include: "htmlStatic/**",
   },
   plugins: [terser(), resolve()],
 };
 
-const getEntries = function () {
-  const entrysFilePath = path.join(__dirname, "htmlStatic/js");
-  const entrysFileList = fs.readdirSync(entrysFilePath);
-  return entrysFileList.map((fileName) => path.join("htmlStatic/js", fileName));
-};
-
 module.exports = {
   external: commonConfig.external,
-  input: getEntries(),
+  input: ["htmlStatic/index.html"],
   output: {
     dir: "dist",
     format: "es",
     sourcemap: isDev,
+    // type为module的将被视为entry文件
     entryFileNames: isDev ? "entry/[name].js" : "entry/[name]-entry.[hash].js",
+    // 其他依赖均打入vender目录
     chunkFileNames: isDev
       ? "vender/[name].js"
       : "vender/[name]-vender.[hash].js",
+    // 此配置会影响@web/rollup-plugin-html
     assetFileNames: (assetInfo) => {
-      if (assetInfo.name.indexOf("css") > -1) {
+      if (assetInfo.name.endsWith("css")) {
         return isDev ? "css/[name][extname]" : "css/[name]-[hash][extname]";
       }
-      return isDev ? "assets/[name][extname]" : "assets/[name]-[hash][extname]";
+
+      // 其他静态资源均会打包入assets目录
+      // 路径不需要额外补充assets，默认该路径
+      return isDev ? "[name][extname]" : "[name]-[hash][extname]";
     },
+    // split chunk
     manualChunks: (id, moduleInfo) => {
       if (id.includes("/common/common")) {
         return "vendor";
       }
+      return "third_party";
     },
   },
   watch: {
@@ -93,30 +96,48 @@ module.exports = {
   plugins: [
     commonjs(),
     del({ targets: "dist/*", runOnce: true }),
-    // 抽取js中加载的样式文件
+    // 整合所有样式到一个文件
     styles({
-      mode: ["extract", "styles.css"],
+      mode: ["extract", "styled.css"],
+      less: {},
       minimize: true,
+      // 解析css中的url路径
       url: {
-        inline: false,
-        // 图片资源的路径前缀
-        publicPath: "/assets/",
+        // 如果使用了assetFileNames，则需要指定此路径find pic
+        publicPath: "../assets/",
       },
     }),
-    // 需要在js中引用的才能收集到，该场景下不合适
-    // url({
-    //   include: ["**/*.svg", "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif"],
-    //   limit: 0,
-    //   inline: false,
-    //   fileName: isDev
-    //     ? "images/[name][extname]"
-    //     : "images/[name]-[hash][extname]",
-    //   destDir: "dist",
-    // }),
-    html({
-      title: "测试",
-      compress: true,
-      template: path.join(__dirname, "/htmlStatic/index.html"),
+    // 支持html为入口
+    // 该插件runtime before assetFileNames
+    rollupPluginHTML({
+      publicPath: "/",
+      minify: true,
+      bundleAssetsFromCss: true,
     }),
+    // 注入最终生成的styled.css
+    // 2.3版本@web/rollup-plugin-html不支持自动注入了
+    {
+      name: "inject-css",
+      writeBundle(_, bundle) {
+        const cssFile = Object.values(bundle).find(
+          (file) => file.type === "asset" && file.fileName.endsWith(".css")
+        );
+
+        if (cssFile) {
+          // 打开并读取 HTML 模板
+          const htmlFilePath = path.resolve("dist/index.html");
+          const htmlContent = fs.readFileSync(htmlFilePath, "utf-8");
+
+          // 修改 HTML 内容，手动插入 CSS
+          const updatedHtml = htmlContent.replace(
+            "</head>",
+            `<link rel="stylesheet" href="${cssFile.fileName}"></head>`
+          );
+
+          // 写回修改后的 HTML 内容
+          fs.writeFileSync(htmlFilePath, updatedHtml);
+        }
+      },
+    },
   ].concat(commonConfig.plugins, isDev ? devsPlugins : []),
 };

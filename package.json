@@ -38,6 +38,7 @@
     "@types/html-minifier-terser": "^7.0.2",
     "@types/lodash": "^4.17.13",
     "@types/node": "^22.8.6",
+    "@web/rollup-plugin-html": "^2.3.0",
     "html-minifier-terser": "^7.2.0",
     "less": "^4.2.1",
     "postcss": "^8.4.49",
