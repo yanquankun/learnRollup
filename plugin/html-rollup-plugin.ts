@@ -86,7 +86,7 @@ const html = (opts: IHtmlPluginOptions) => {
       const jsDepContent = jsFiles
         .map(
           (file) =>
-            `<script src="${
+            `<script type="module" defer src="${
               publicPath ? path.join(publicPath, file) : file
             }"></script>`
         )

@@ -76,6 +76,11 @@ module.exports = {
       }
       return isDev ? "assets/[name][extname]" : "assets/[name]-[hash][extname]";
     },
+    manualChunks: (id, moduleInfo) => {
+      if (id.includes("/common/common")) {
+        return "vendor";
+      }
+    },
   },
   watch: {
     ...commonConfig.watch,
@@ -87,7 +92,22 @@ module.exports = {
     styles({
       mode: ["extract", "styles.css"],
       minimize: true,
+      url: {
+        inline: false,
+        // 图片资源的路径前缀
+        publicPath: "/assets/",
+      },
     }),
+    // 需要在js中引用的才能收集到，该场景下不合适
+    // url({
+    //   include: ["**/*.svg", "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif"],
+    //   limit: 0,
+    //   inline: false,
+    //   fileName: isDev
+    //     ? "images/1[name][extname]"
+    //     : "images/1[name]-[hash][extname]",
+    //   destDir: "dist",
+    // }),
     html({
       title: "测试",
       compress: true,
