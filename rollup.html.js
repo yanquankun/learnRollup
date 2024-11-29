@@ -108,8 +108,8 @@ module.exports = {
     //   limit: 0,
     //   inline: false,
     //   fileName: isDev
-    //     ? "images/1[name][extname]"
-    //     : "images/1[name]-[hash][extname]",
+    //     ? "images/[name][extname]"
+    //     : "images/[name]-[hash][extname]",
     //   destDir: "dist",
     // }),
     html({

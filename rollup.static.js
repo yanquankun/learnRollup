@@ -42,7 +42,7 @@ const devsPlugins = [
     contentBase: "dist",
   }),
   livereload({
-    watch: ["dist", "html/index.html"],
+    watch: ["dist", "htmlStatic/index.html"],
   }),
 ];
 
@@ -59,9 +59,9 @@ const commonConfig = {
 };
 
 const getEntries = function () {
-  const entrysFilePath = path.join(__dirname, "html/js");
+  const entrysFilePath = path.join(__dirname, "htmlStatic/js");
   const entrysFileList = fs.readdirSync(entrysFilePath);
-  return entrysFileList.map((fileName) => path.join("html/js", fileName));
+  return entrysFileList.map((fileName) => path.join("htmlStatic/js", fileName));
 };
 
 module.exports = {
@@ -109,14 +109,14 @@ module.exports = {
     //   limit: 0,
     //   inline: false,
     //   fileName: isDev
-    //     ? "images/1[name][extname]"
-    //     : "images/1[name]-[hash][extname]",
+    //     ? "images/[name][extname]"
+    //     : "images/[name]-[hash][extname]",
     //   destDir: "dist",
     // }),
     html({
       title: "测试",
       compress: true,
-      template: path.join(__dirname, "/html/index.html"),
+      template: path.join(__dirname, "/htmlStatic/index.html"),
     }),
   ].concat(commonConfig.plugins, isDev ? devsPlugins : []),
 };
