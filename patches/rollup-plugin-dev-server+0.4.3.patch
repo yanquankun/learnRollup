@@ -1,0 +1,13 @@
+diff --git a/node_modules/rollup-plugin-dev-server/dist/index.cjs.js b/node_modules/rollup-plugin-dev-server/dist/index.cjs.js
+index 1a1ffce..9a70f59 100644
+--- a/node_modules/rollup-plugin-dev-server/dist/index.cjs.js
++++ b/node_modules/rollup-plugin-dev-server/dist/index.cjs.js
+@@ -98,7 +98,7 @@ function serve(options) {
+ 
+   return {
+     name: 'serve',
+-    ongenerate: function ongenerate() {
++    writeBundle: function ongenerate() {
+       if (!running) {
+         running = true;
+ 

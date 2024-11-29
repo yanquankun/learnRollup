@@ -119,11 +119,17 @@ module.exports = {
     {
       name: "inject-css",
       writeBundle(_, bundle) {
-        const cssFile = Object.values(bundle).find(
+        const cssFiles = Object.values(bundle).filter(
           (file) => file.type === "asset" && file.fileName.endsWith(".css")
         );
 
-        if (cssFile) {
+        if (cssFiles.length) {
+          const cssFileStr = cssFiles.reduce(
+            (cssLinkStr, curCssFile) =>
+              curCssFile.fileName &&
+              (cssLinkStr += `<link rel="stylesheet" href="${curCssFile.fileName}"></link>`),
+            ""
+          );
           // 打开并读取 HTML 模板
           const htmlFilePath = path.resolve("dist/index.html");
           const htmlContent = fs.readFileSync(htmlFilePath, "utf-8");
@@ -131,7 +137,7 @@ module.exports = {
           // 修改 HTML 内容，手动插入 CSS
           const updatedHtml = htmlContent.replace(
             "</head>",
-            `<link rel="stylesheet" href="${cssFile.fileName}"></head>`
+            `${cssFileStr}</head>`
           );
 
           // 写回修改后的 HTML 内容

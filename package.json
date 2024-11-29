@@ -4,6 +4,7 @@
   "description": "this is a study rollup project",
   "main": "index.js",
   "scripts": {
+    "postinstall": "patch-package",
     "amd": "rollup src/index.js --file dist/bundle.js  --format amd",
     "cjs": "rollup src/index.js --file dist/bundle.js  --format cjs",
     "iife": "rollup src/index.js --file dist/bundle.js --name test --format iife",
@@ -41,6 +42,7 @@
     "@web/rollup-plugin-html": "^2.3.0",
     "html-minifier-terser": "^7.2.0",
     "less": "^4.2.1",
+    "patch-package": "^8.0.0",
     "postcss": "^8.4.49",
     "rollup": "^4.24.3",
     "rollup-plugin-copy": "^3.5.0",
